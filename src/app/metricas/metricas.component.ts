@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 })
 export class MetricasComponent {
   headerActions = [
-    { id: 'refresh', label: 'Actualizar Datos', icon: 'fa fa-refresh', btnClass: 'btn btn-outline-secondary' },
+    { id: 'refresh', label: 'Actualizar', icon: 'fa fa-refresh', btnClass: 'btn btn-outline-secondary' },
     { id: 'export', label: 'Descargar Resumen PDF', icon: 'fa fa-file-pdf-o', btnClass: 'btn btn-primary' }
   ];
 

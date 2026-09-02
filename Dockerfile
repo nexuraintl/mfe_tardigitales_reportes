@@ -1,4 +1,4 @@
-﻿# Etapa 1: Construcción de la aplicación
+# Etapa 1: Construcción de la aplicación
 FROM node:22-alpine AS build
 
 WORKDIR /app
@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-RUN npx ng build --base-href=/admin/reportes/
+RUN npx ng build --base-href=/admin/tardigitales/reportes/
 
 # Etapa 2: Servidor Nginx unprivileged
 FROM nginxinc/nginx-unprivileged:alpine

@@ -1,0 +1,87 @@
+﻿<div class="nx-table-card p-4">
+  <!-- Filtros superiores -->
+  <div class="row g-3 mb-4 align-items-center">
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa fa-search"></i></span>
+        <input 
+          type="text" 
+          class="form-control border-start-0 ps-0" 
+          placeholder="Buscar por radicado, solicitante, documento..." 
+          [(ngModel)]="searchQuery" 
+          (ngModelChange)="currentPage = 1"
+        />
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-3">
+      <select class="form-select" [(ngModel)]="filtroEstado" (ngModelChange)="currentPage = 1">
+        <option value="">Todos los Estados</option>
+        <option value="Aprobado">Aprobado</option>
+        <option value="En Revisión">En Revisión</option>
+        <option value="Rechazado">Rechazado</option>
+      </select>
+    </div>
+    <div class="col-6 col-md-3 col-lg-2 ms-auto text-end">
+      <button type="button" class="btn btn-outline-success w-100" (click)="exportExcel()">
+        <i class="fa fa-file-excel-o me-1"></i> Exportar
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla Nativa de Angular -->
+  <div class="table-responsive">
+    <table class="table table-hover align-middle m-0">
+      <thead class="table-light">
+        <tr>
+          <th style="cursor: pointer;" (click)="ordenar('radicado')">
+            Radicado <i class="fa fa-sort text-muted small ms-1"></i>
+          </th>
+          <th style="cursor: pointer;" (click)="ordenar('solicitante')">
+            Solicitante <i class="fa fa-sort text-muted small ms-1"></i>
+          </th>
+          <th>Documento</th>
+          <th>Tipo de Trámite</th>
+          <th style="cursor: pointer;" (click)="ordenar('estado')">
+            Estado <i class="fa fa-sort text-muted small ms-1"></i>
+          </th>
+          <th style="cursor: pointer;" (click)="ordenar('fecha')">
+            Fecha / Hora <i class="fa fa-sort text-muted small ms-1"></i>
+          </th>
+          <th>Ciudad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of pagedList">
+          <td class="fw-bold text-primary">{{ item.radicado }}</td>
+          <td class="fw-medium text-dark">{{ item.solicitante }}</td>
+          <td class="text-muted">{{ item.documento }}</td>
+          <td><span class="badge bg-light text-dark border">{{ item.tipo }}</span></td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'bg-success-subtle text-success': item.estado === 'Aprobado',
+              'bg-warning-subtle text-warning': item.estado === 'En Revisión',
+              'bg-danger-subtle text-danger': item.estado === 'Rechazado'
+            }">{{ item.estado }}</span>
+          </td>
+          <td class="small text-muted">{{ item.fecha }}</td>
+          <td class="small text-dark">{{ item.entidad }}</td>
+        </tr>
+        <tr *ngIf="pagedList.length === 0">
+          <td colspan="7" class="text-center py-4 text-muted">No se encontraron solicitudes con los criterios indicados.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top flex-wrap gap-2">
+    <div class="small text-muted">
+      Mostrando {{ pagedList.length }} de {{ filteredList.length }} registros
+    </div>
+    <div class="btn-group btn-group-sm" *ngIf="totalPages > 1">
+      <button class="btn btn-outline-secondary" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Anterior</button>
+      <button class="btn btn-primary">{{ currentPage }} / {{ totalPages }}</button>
+      <button class="btn btn-outline-secondary" [disabled]="currentPage === totalPages" (click)="currentPage = currentPage + 1">Siguiente</button>
+    </div>
+  </div>
+</div>

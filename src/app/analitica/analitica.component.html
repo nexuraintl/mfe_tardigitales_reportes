@@ -1,87 +1,166 @@
-﻿<div class="nx-table-card p-4">
-  <!-- Filtros superiores -->
-  <div class="row g-3 mb-4 align-items-center">
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="input-group">
-        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa fa-search"></i></span>
-        <input 
-          type="text" 
-          class="form-control border-start-0 ps-0" 
-          placeholder="Buscar por radicado, solicitante, documento..." 
-          [(ngModel)]="searchQuery" 
-          (ngModelChange)="currentPage = 1"
-        />
-      </div>
+<div class="nx-table-card shadow-sm mb-4">
+  <!-- Header de la tarjeta -->
+  <div class="card-header bg-white py-3 px-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h5 class="card-title fw-bold mb-0 text-dark">
+        <span class="fa fa-table text-secondary me-2"></span> Detalle Analítico de Solicitudes
+      </h5>
+      <small class="text-muted">Registro pormenorizado y trazabilidad de solicitudes de tarjetas.</small>
     </div>
-    <div class="col-6 col-md-3 col-lg-3">
-      <select class="form-select" [(ngModel)]="filtroEstado" (ngModelChange)="currentPage = 1">
-        <option value="">Todos los Estados</option>
-        <option value="Aprobado">Aprobado</option>
-        <option value="En Revisión">En Revisión</option>
-        <option value="Rechazado">Rechazado</option>
-      </select>
-    </div>
-    <div class="col-6 col-md-3 col-lg-2 ms-auto text-end">
-      <button type="button" class="btn btn-outline-success w-100" (click)="exportExcel()">
-        <i class="fa fa-file-excel-o me-1"></i> Exportar
+    <span class="badge bg-light text-dark border px-3 py-2 fs-6 fw-semibold">{{ filteredList.length }} registros</span>
+  </div>
+
+  <!-- Barra de Herramientas: Buscador, Filtro Estado y Selector de Registros -->
+  <div class="nx-table-toolbar">
+    <div class="nx-table-search-wrap">
+      <input 
+        type="text" 
+        class="nx-table-search-input" 
+        placeholder="Buscar por radicado, solicitante, documento..." 
+        [(ngModel)]="searchQuery" 
+        (ngModelChange)="onSearchChange()"
+      >
+      <button 
+        *ngIf="searchQuery" 
+        type="button" 
+        class="btn btn-sm btn-link text-muted position-absolute end-0 me-2 p-0 text-decoration-none"
+        (click)="searchQuery = ''; onSearchChange()"
+        title="Limpiar búsqueda"
+      >
+        <span class="fa fa-times"></span>
       </button>
+    </div>
+
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <div class="d-flex align-items-center gap-2">
+        <span class="text-muted small fw-semibold">Estado:</span>
+        <select class="form-select form-select-sm" style="width: 140px; border-radius: 8px;" [(ngModel)]="filtroEstado" (ngModelChange)="currentPage = 1">
+          <option value="">Todos</option>
+          <option value="Aprobado">Aprobado</option>
+          <option value="En Revisión">En Revisión</option>
+          <option value="Rechazado">Rechazado</option>
+        </select>
+      </div>
+
+      <div class="nx-table-length">
+        <span>Mostrar</span>
+        <select class="nx-table-length-select" [ngModel]="pageSize" (ngModelChange)="cambiarTamanoPagina($event)">
+          <option *ngFor="let opt of pageSizeOptions" [value]="opt">{{ opt }}</option>
+        </select>
+        <span>registros</span>
+      </div>
     </div>
   </div>
 
-  <!-- Tabla Nativa de Angular -->
+  <!-- Tabla Responsiva -->
   <div class="table-responsive">
-    <table class="table table-hover align-middle m-0">
+    <table class="table table-hover align-middle mb-0 w-100">
       <thead class="table-light">
         <tr>
-          <th style="cursor: pointer;" (click)="ordenar('radicado')">
-            Radicado <i class="fa fa-sort text-muted small ms-1"></i>
+          <th scope="col" class="ps-3 nx-sortable" (click)="ordenar('radicado')">
+            Radicado
+            <span class="fa nx-sort-icon" [ngClass]="{
+              'fa-sort': sortColumn !== 'radicado',
+              'fa-sort-asc': sortColumn === 'radicado' && sortDirection === 'asc',
+              'fa-sort-desc': sortColumn === 'radicado' && sortDirection === 'desc'
+            }"></span>
           </th>
-          <th style="cursor: pointer;" (click)="ordenar('solicitante')">
-            Solicitante <i class="fa fa-sort text-muted small ms-1"></i>
+          <th scope="col" class="nx-sortable" (click)="ordenar('solicitante')">
+            Solicitante
+            <span class="fa nx-sort-icon" [ngClass]="{
+              'fa-sort': sortColumn !== 'solicitante',
+              'fa-sort-asc': sortColumn === 'solicitante' && sortDirection === 'asc',
+              'fa-sort-desc': sortColumn === 'solicitante' && sortDirection === 'desc'
+            }"></span>
           </th>
-          <th>Documento</th>
-          <th>Tipo de Trámite</th>
-          <th style="cursor: pointer;" (click)="ordenar('estado')">
-            Estado <i class="fa fa-sort text-muted small ms-1"></i>
+          <th scope="col">Documento</th>
+          <th scope="col">Tipo de Trámite</th>
+          <th scope="col" class="nx-sortable" (click)="ordenar('estado')">
+            Estado
+            <span class="fa nx-sort-icon" [ngClass]="{
+              'fa-sort': sortColumn !== 'estado',
+              'fa-sort-asc': sortColumn === 'estado' && sortDirection === 'asc',
+              'fa-sort-desc': sortColumn === 'estado' && sortDirection === 'desc'
+            }"></span>
           </th>
-          <th style="cursor: pointer;" (click)="ordenar('fecha')">
-            Fecha / Hora <i class="fa fa-sort text-muted small ms-1"></i>
+          <th scope="col" class="nx-sortable" (click)="ordenar('fecha')">
+            Fecha / Hora
+            <span class="fa nx-sort-icon" [ngClass]="{
+              'fa-sort': sortColumn !== 'fecha',
+              'fa-sort-asc': sortColumn === 'fecha' && sortDirection === 'asc',
+              'fa-sort-desc': sortColumn === 'fecha' && sortDirection === 'desc'
+            }"></span>
           </th>
-          <th>Ciudad</th>
+          <th scope="col" class="pe-3">Ciudad</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of pagedList">
-          <td class="fw-bold text-primary">{{ item.radicado }}</td>
+          <td class="ps-3 fw-bold text-primary">{{ item.radicado }}</td>
           <td class="fw-medium text-dark">{{ item.solicitante }}</td>
           <td class="text-muted">{{ item.documento }}</td>
-          <td><span class="badge bg-light text-dark border">{{ item.tipo }}</span></td>
+          <td>
+            <span class="badge bg-light text-dark border px-2 py-1 fw-semibold">{{ item.tipo }}</span>
+          </td>
           <td>
             <span class="badge" [ngClass]="{
-              'bg-success-subtle text-success': item.estado === 'Aprobado',
-              'bg-warning-subtle text-warning': item.estado === 'En Revisión',
-              'bg-danger-subtle text-danger': item.estado === 'Rechazado'
+              'bg-success text-white': item.estado === 'Aprobado',
+              'bg-warning text-dark': item.estado === 'En Revisión',
+              'bg-danger text-white': item.estado === 'Rechazado'
             }">{{ item.estado }}</span>
           </td>
           <td class="small text-muted">{{ item.fecha }}</td>
-          <td class="small text-dark">{{ item.entidad }}</td>
+          <td class="pe-3 small text-dark">{{ item.entidad }}</td>
         </tr>
         <tr *ngIf="pagedList.length === 0">
-          <td colspan="7" class="text-center py-4 text-muted">No se encontraron solicitudes con los criterios indicados.</td>
+          <td colspan="7" class="text-center py-4 text-muted">
+            <span class="fa fa-info-circle me-1"></span> No se encontraron solicitudes con los criterios indicados.
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Paginación -->
-  <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top flex-wrap gap-2">
-    <div class="small text-muted">
-      Mostrando {{ pagedList.length }} de {{ filteredList.length }} registros
+  <!-- Pie de Tabla: Contador y Paginación Nativa -->
+  <div class="nx-table-footer">
+    <div class="nx-table-info">
+      Mostrando {{ startRecord }} a {{ endRecord }} de {{ totalRecords }} registros
+      <span *ngIf="searchQuery || filtroEstado" class="text-muted">(filtrado de {{ solicitudes.length }} totales)</span>
     </div>
-    <div class="btn-group btn-group-sm" *ngIf="totalPages > 1">
-      <button class="btn btn-outline-secondary" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Anterior</button>
-      <button class="btn btn-primary">{{ currentPage }} / {{ totalPages }}</button>
-      <button class="btn btn-outline-secondary" [disabled]="currentPage === totalPages" (click)="currentPage = currentPage + 1">Siguiente</button>
-    </div>
+
+    <ul class="nx-table-pagination" *ngIf="totalPages > 1">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button type="button" class="page-link" (click)="cambiarPagina(1)" [disabled]="currentPage === 1" title="Primera página">
+          ««
+        </button>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button type="button" class="page-link" (click)="cambiarPagina(currentPage - 1)" [disabled]="currentPage === 1" title="Página anterior">
+          «
+        </button>
+      </li>
+
+      <li 
+        class="page-item" 
+        *ngFor="let p of pagesArray" 
+        [class.active]="p === currentPage"
+      >
+        <button type="button" class="page-link" (click)="cambiarPagina(p)">
+          {{ p }}
+        </button>
+      </li>
+
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button type="button" class="page-link" (click)="cambiarPagina(currentPage + 1)" [disabled]="currentPage === totalPages" title="Página siguiente">
+          »
+        </button>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button type="button" class="page-link" (click)="cambiarPagina(totalPages)" [disabled]="currentPage === totalPages" title="Última página">
+          »»
+        </button>
+      </li>
+    </ul>
   </div>
 </div>
+

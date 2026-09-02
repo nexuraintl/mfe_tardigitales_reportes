@@ -1,62 +1,71 @@
-﻿<div class="row justify-content-center">
-  <div class="col-12 col-lg-8">
-    <div class="nx-table-card p-4">
-      <h5 class="fw-bold text-dark mb-3">Generador y Exportación de Informes Oficiales</h5>
-      <p class="text-muted small mb-4">
-        Seleccione el tipo de informe consolidado, el rango de fechas y el formato deseado para generar el paquete de datos.
-      </p>
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-9">
+    <div class="nx-table-card shadow-sm mb-4">
+      <!-- Header de la tarjeta -->
+      <div class="card-header bg-white py-3 px-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <h5 class="card-title fw-bold mb-0 text-dark">
+            <span class="fa fa-file-text-o text-secondary me-2"></span> Generador y Exportación de Informes
+          </h5>
+          <small class="text-muted">Configure los parámetros para exportar consolidados oficiales en múltiples formatos.</small>
+        </div>
+        <span class="badge bg-light text-dark border px-3 py-2 fs-6 fw-semibold">Exportador Oficial</span>
+      </div>
 
-      <form (ngSubmit)="generarInforme()">
-        <div class="row g-3 mb-3">
-          <div class="col-12 col-md-6">
-            <label class="form-label fw-semibold small">Tipo de Informe</label>
-            <select class="form-select" [(ngModel)]="tipoInforme" name="tipoInforme">
-              <option value="general">Consolidado General de Solicitudes</option>
-              <option value="contadores">Reporte Detallado de Contadores Públicos</option>
-              <option value="sociedades">Reporte de Sociedades de Contadores</option>
-              <option value="notificaciones">Auditoría de Envíos y Notificaciones</option>
-            </select>
+      <div class="p-4">
+        <form (ngSubmit)="generarInforme()">
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold small">Tipo de Informe</label>
+              <select class="form-select" [(ngModel)]="tipoInforme" name="tipoInforme">
+                <option value="general">Consolidado General de Solicitudes</option>
+                <option value="contadores">Reporte Detallado de Contadores Públicos</option>
+                <option value="sociedades">Reporte de Sociedades de Contadores</option>
+                <option value="notificaciones">Auditoría de Envíos y Notificaciones</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold small">Formato de Salida</label>
+              <select class="form-select" [(ngModel)]="formato" name="formato">
+                <option value="pdf">Documento PDF Oficial (.pdf)</option>
+                <option value="excel">Libro de Cálculo Excel (.xlsx / .csv)</option>
+                <option value="json">Estructura de Datos JSON (.json)</option>
+              </select>
+            </div>
           </div>
-          <div class="col-12 col-md-6">
-            <label class="form-label fw-semibold small">Formato de Salida</label>
-            <select class="form-select" [(ngModel)]="formato" name="formato">
-              <option value="pdf">Documento PDF Oficial (.pdf)</option>
-              <option value="excel">Libro de Cálculo Excel (.xlsx / .csv)</option>
-              <option value="json">Estructura de Datos JSON (.json)</option>
-            </select>
+
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold small">Fecha Desde</label>
+              <input type="date" class="form-control" [(ngModel)]="fechaInicio" name="fechaInicio" />
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-semibold small">Fecha Hasta</label>
+              <input type="date" class="form-control" [(ngModel)]="fechaFin" name="fechaFin" />
+            </div>
           </div>
-        </div>
 
-        <div class="row g-3 mb-4">
-          <div class="col-12 col-md-6">
-            <label class="form-label fw-semibold small">Fecha Desde</label>
-            <input type="date" class="form-control" [(ngModel)]="fechaInicio" name="fechaInicio" />
+          <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" id="incluirDetalle" [(ngModel)]="incluirDetalle" name="incluirDetalle">
+            <label class="form-check-label small text-muted" for="incluirDetalle">
+              Incluir trazabilidad completa y logs de auditoría de cada solicitud
+            </label>
           </div>
-          <div class="col-12 col-md-6">
-            <label class="form-label fw-semibold small">Fecha Hasta</label>
-            <input type="date" class="form-control" [(ngModel)]="fechaFin" name="fechaFin" />
+
+          <div *ngIf="mensajeExito" class="alert alert-success d-flex align-items-center gap-2 mb-4">
+            <i class="fa fa-check-circle"></i>
+            <div>¡Informe generado y descargado exitosamente en formato {{ formato.toUpperCase() }}!</div>
           </div>
-        </div>
 
-        <div class="form-check mb-4">
-          <input class="form-check-input" type="checkbox" id="incluirDetalle" [(ngModel)]="incluirDetalle" name="incluirDetalle">
-          <label class="form-check-label small text-muted" for="incluirDetalle">
-            Incluir trazabilidad completa y logs de auditoría de cada solicitud
-          </label>
-        </div>
-
-        <div *ngIf="mensajeExito" class="alert alert-success d-flex align-items-center gap-2 mb-4">
-          <i class="fa fa-check-circle"></i>
-          <div>¡Informe generado y descargado exitosamente en formato {{ formato.toUpperCase() }}!</div>
-        </div>
-
-        <div class="d-flex justify-content-end gap-2">
-          <button type="submit" class="btn btn-primary px-4 py-2" [disabled]="generando">
-            <i class="fa" [ngClass]="generando ? 'fa-spinner fa-spin' : 'fa-download'"></i>
-            {{ generando ? 'Procesando Informe...' : 'Descargar Informe' }}
-          </button>
-        </div>
-      </form>
+          <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+            <button type="submit" class="btn btn-primary" [disabled]="generando">
+              <i class="fa" [ngClass]="generando ? 'fa-spinner fa-spin' : 'fa-download'"></i>
+              {{ generando ? 'Procesando Informe...' : 'Descargar Informe' }}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>
+

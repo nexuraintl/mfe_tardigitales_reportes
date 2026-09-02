@@ -1,3 +1,4 @@
+<!-- KPIs en tiempo real -->
 <div class="row g-4 mb-4">
   <div class="col-12 col-sm-6 col-xl-3" *ngFor="let kpi of kpis">
     <div class="nx-kpi-card h-100 d-flex flex-column justify-content-between">
@@ -6,8 +7,11 @@
         <span [class]="kpi.icon" [style.color]="kpi.color" style="font-size: 22px;"></span>
       </div>
       <div class="d-flex justify-content-between align-items-end">
-        <div class="nx-kpi-value">{{ kpi.value }}</div>
-        <span class="badge bg-success-subtle text-success fw-bold px-2 py-1">{{ kpi.change }}</span>
+        <div class="nx-kpi-value">
+          <span *ngIf="cargando" class="spinner-border spinner-border-sm text-primary"></span>
+          <span *ngIf="!cargando">{{ kpi.value }}</span>
+        </div>
+        <span class="badge bg-primary-subtle text-primary fw-bold px-2 py-1">{{ kpi.change }}</span>
       </div>
     </div>
   </div>
@@ -22,11 +26,17 @@
           <h5 class="card-title fw-bold mb-0 text-dark">
             <span class="fa fa-pie-chart text-secondary me-2"></span> Distribución por Tipo de Trámite
           </h5>
-          <small class="text-muted">Proporción de trámites solicitados en el periodo.</small>
+          <small class="text-muted">Servicios y catálogo activo en el microservicio.</small>
         </div>
-        <span class="badge bg-light text-dark border px-3 py-2 fs-6 fw-semibold">Mes actual</span>
+        <span class="badge bg-light text-dark border px-3 py-2 fs-6 fw-semibold">En tiempo real</span>
       </div>
       <div class="p-4 d-flex flex-column gap-3">
+        <div *ngIf="cargando" class="text-center py-4 text-muted">
+          <i class="fa fa-circle-o-notch fa-spin me-2"></i> Cargando trámites...
+        </div>
+        <div *ngIf="!cargando && tramitesPorTipo.length === 0" class="text-center py-4 text-muted">
+          No hay trámites registrados.
+        </div>
         <div *ngFor="let item of tramitesPorTipo">
           <div class="d-flex justify-content-between font-sm mb-1">
             <span class="fw-semibold text-dark">{{ item.nombre }}</span>
@@ -40,27 +50,30 @@
     </div>
   </div>
 
-  <!-- Actividad Reciente -->
+  <!-- Actividad Reciente de Tarjetas -->
   <div class="col-12 col-lg-6">
     <div class="nx-table-card shadow-sm h-100">
       <div class="card-header bg-white py-3 px-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div>
           <h5 class="card-title fw-bold mb-0 text-dark">
-            <span class="fa fa-history text-secondary me-2"></span> Últimas Solicitudes Procesadas
+            <span class="fa fa-history text-secondary me-2"></span> Últimas Tarjetas Registradas
           </h5>
-          <small class="text-muted">Flujo reciente de trámites y solicitudes.</small>
+          <small class="text-muted">Registros obtenidos directamente desde la base de datos.</small>
         </div>
         <a routerLink="/analitica" class="btn btn-sm btn-outline-secondary px-3 py-1 fw-semibold text-decoration-none">
           Ver todas <span class="fa fa-arrow-right ms-1"></span>
         </a>
       </div>
       <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0 w-100">
+        <div *ngIf="cargando" class="text-center py-4 text-muted">
+          <i class="fa fa-circle-o-notch fa-spin me-2"></i> Consultando registros de tarjetas...
+        </div>
+        <table *ngIf="!cargando" class="table table-hover align-middle mb-0 w-100">
           <thead class="table-light">
             <tr>
-              <th scope="col" class="ps-3 py-2 text-dark small fw-bold">ID / Radicado</th>
+              <th scope="col" class="ps-3 py-2 text-dark small fw-bold">ID / Código</th>
               <th scope="col" class="py-2 text-dark small fw-bold">Solicitante</th>
-              <th scope="col" class="py-2 text-dark small fw-bold">Estado</th>
+              <th scope="col" class="py-2 text-dark small fw-bold">Tipo</th>
               <th scope="col" class="pe-3 py-2 text-dark small fw-bold">Fecha</th>
             </tr>
           </thead>
@@ -69,11 +82,14 @@
               <td class="ps-3 fw-bold text-primary">{{ act.id }}</td>
               <td class="fw-medium text-dark">{{ act.solicitante }}</td>
               <td>
-                <span class="badge" [ngClass]="act.estado === 'Aprobado' ? 'bg-success text-white' : 'bg-warning text-dark'">
-                  {{ act.estado }}
+                <span class="badge bg-secondary-subtle text-dark border">
+                  {{ act.tipo }}
                 </span>
               </td>
               <td class="pe-3 small text-muted">{{ act.fecha }}</td>
+            </tr>
+            <tr *ngIf="ultimasActividades.length === 0">
+              <td colspan="4" class="text-center py-4 text-muted">No hay registros de tarjetas disponibles.</td>
             </tr>
           </tbody>
         </table>
@@ -81,4 +97,3 @@
     </div>
   </div>
 </div>
-

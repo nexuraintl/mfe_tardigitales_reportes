@@ -1,4 +1,4 @@
-﻿import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
@@ -47,18 +47,29 @@ export class App implements OnInit {
     action: () => this.router.navigate(['/exportar'])
   };
 
+  // Configuración de módulos en el menú de aplicaciones del topbar
   appGrid: AppTile[] = [
-    { id: 'tarjetas', name: 'Tarjetas', color: 'blue', iconClass: 'fa fa-id-card', path: '/admin/tardigitales/tarjetas-contadores' },
-    { id: 'sociedades', name: 'Sociedades', color: 'cyan', iconClass: 'fa fa-building-o', path: '/admin/tardigitales/sociedades' },
-    { id: 'notificaciones', name: 'Notificaciones', color: 'orange', iconClass: 'fa fa-bell-o', path: '/admin/tardigitales/crear-notificacion' },
-    { id: 'tramites', name: 'Trámites', color: 'green', iconClass: 'fa fa-list-alt', path: '/admin/tardigitales/crud' },
-    { id: 'reportes', name: 'Reportes', color: 'purple', iconClass: 'fa fa-bar-chart', path: '/admin/reportes/metricas', active: true },
-    { id: 'validador', name: 'Validador QR', color: 'dark', iconClass: 'fa fa-qrcode', path: '/admin/tardigitales/validador-qr' }
+    { 
+      id: 'tarjetas', 
+      name: 'Tarjetas Digitales', 
+      color: 'blue', 
+      iconClass: 'fa fa-id-card', 
+      path: '/admin/tardigitales/crud', 
+      active: false 
+    },
+    { 
+      id: 'reportes', 
+      name: 'Reportes y Analítica', 
+      color: 'purple', 
+      iconClass: 'fa fa-bar-chart', 
+      path: '/admin/reportes/metricas', 
+      active: true 
+    }
   ];
 
   menuSections: MenuSection[] = [
     {
-      sectionTitle: 'ANALÍTICA & REPORTES',
+      sectionTitle: 'Analítica & Reportes',
       items: [
         {
           label: 'Dashboard y Métricas',
@@ -74,21 +85,6 @@ export class App implements OnInit {
           label: 'Exportar Informes',
           icon: 'fa fa-download',
           path: '/exportar'
-        }
-      ]
-    },
-    {
-      sectionTitle: 'MÓDULOS DEL SISTEMA',
-      items: [
-        {
-          label: 'Ir a Tarjetas Digitales',
-          icon: 'fa fa-id-card-o',
-          path: '/admin/tardigitales/tarjetas-contadores'
-        },
-        {
-          label: 'Ir a Trámites',
-          icon: 'fa fa-list-alt',
-          path: '/admin/tardigitales/crud'
         }
       ]
     }

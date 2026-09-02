@@ -62,7 +62,7 @@ export class App implements OnInit {
       name: 'Reportes y Analítica', 
       color: 'purple', 
       iconClass: 'fa fa-bar-chart', 
-      path: '/admin/reportes/metricas', 
+      path: '/admin/tardigitales/reportes/metricas', 
       active: true 
     }
   ];
@@ -130,7 +130,10 @@ export class App implements OnInit {
   onNavigate(event: CustomEvent) {
     const path = event.detail?.path;
     if (path) {
-      if (path.startsWith('/admin/tardigitales')) {
+      if (path.startsWith('/admin/tardigitales/reportes/')) {
+        const internalPath = path.replace('/admin/tardigitales/reportes', '') || '/metricas';
+        this.router.navigate([internalPath]);
+      } else if (path.startsWith('/admin/tardigitales') || path.startsWith('http')) {
         window.location.href = path;
       } else {
         this.router.navigate([path]);

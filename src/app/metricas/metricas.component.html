@@ -1,0 +1,71 @@
+﻿<div class="row g-4 mb-4">
+  <div class="col-12 col-sm-6 col-xl-3" *ngFor="let kpi of kpis">
+    <div class="nx-kpi-card h-100 d-flex flex-column justify-content-between">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <span class="nx-kpi-label">{{ kpi.label }}</span>
+        <span [class]="kpi.icon" [style.color]="kpi.color" style="font-size: 22px;"></span>
+      </div>
+      <div class="d-flex justify-content-between align-items-end">
+        <div class="nx-kpi-value">{{ kpi.value }}</div>
+        <span class="badge bg-success-subtle text-success fw-bold px-2 py-1">{{ kpi.change }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Distribución por Trámite -->
+  <div class="col-12 col-lg-6">
+    <div class="nx-table-card p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold text-dark m-0">Distribución por Tipo de Trámite</h5>
+        <span class="badge bg-light text-muted border">Mes actual</span>
+      </div>
+      <div class="d-flex flex-column gap-3">
+        <div *ngFor="let item of tramitesPorTipo">
+          <div class="d-flex justify-content-between font-sm mb-1">
+            <span class="fw-semibold text-dark">{{ item.nombre }}</span>
+            <span class="fw-bold text-primary">{{ item.total }} ({{ item.porcentaje }}%)</span>
+          </div>
+          <div class="progress" style="height: 8px;">
+            <div class="progress-bar bg-primary" role="progressbar" [style.width.%]="item.porcentaje"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actividad Reciente -->
+  <div class="col-12 col-lg-6">
+    <div class="nx-table-card p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-dark m-0">Últimas Solicitudes Procesadas</h5>
+        <a routerLink="/analitica" class="text-primary text-decoration-none fw-semibold small">Ver todas →</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle table-hover m-0">
+          <thead class="table-light">
+            <tr>
+              <th class="small text-muted">ID / Radicado</th>
+              <th class="small text-muted">Solicitante</th>
+              <th class="small text-muted">Estado</th>
+              <th class="small text-muted">Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let act of ultimasActividades">
+              <td class="fw-bold text-primary">{{ act.id }}</td>
+              <td class="fw-medium text-dark">{{ act.solicitante }}</td>
+              <td>
+                <span class="badge" [ngClass]="act.estado === 'Aprobado' ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning'">
+                  {{ act.estado }}
+                </span>
+              </td>
+              <td class="small text-muted">{{ act.fecha }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

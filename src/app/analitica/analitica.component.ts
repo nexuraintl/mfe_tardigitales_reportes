@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -12,12 +12,13 @@ export class AnaliticaComponent {
   searchQuery = '';
   filtroEstado = '';
   pageSize = 10;
+  pageSizeOptions = [5, 10, 25, 50];
   currentPage = 1;
   sortColumn = 'fecha';
   sortDirection: 'asc' | 'desc' = 'desc';
 
   headerActions = [
-    { id: 'exportExcel', label: 'Exportar a Excel (CSV)', icon: 'fa fa-file-excel-o', btnClass: 'btn btn-success' }
+    { id: 'exportExcel', label: 'Exportar CSV', icon: 'fa fa-download', btnClass: 'btn btn-outline-secondary' }
   ];
 
   solicitudes = [
@@ -59,8 +60,45 @@ export class AnaliticaComponent {
     return this.filteredList.slice(start, start + this.pageSize);
   }
 
-  get totalPages() {
-    return Math.ceil(this.filteredList.length / this.pageSize) || 1;
+  get totalRecords(): number {
+    return this.filteredList.length;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalRecords / this.pageSize) || 1;
+  }
+
+  get startRecord(): number {
+    if (this.totalRecords === 0) return 0;
+    return (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  get endRecord(): number {
+    const end = this.currentPage * this.pageSize;
+    return end > this.totalRecords ? this.totalRecords : end;
+  }
+
+  get pagesArray(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  cambiarPagina(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  cambiarTamanoPagina(size: any): void {
+    this.pageSize = Number(size);
+    this.currentPage = 1;
+  }
+
+  onSearchChange(): void {
+    this.currentPage = 1;
   }
 
   ordenar(col: string) {
@@ -85,3 +123,4 @@ export class AnaliticaComponent {
     link.click();
   }
 }
+

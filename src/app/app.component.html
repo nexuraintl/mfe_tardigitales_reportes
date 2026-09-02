@@ -1,0 +1,40 @@
+﻿<nx-admin-layout
+  [appTitle]="'Reportes y Analítica'"
+  [activePath]="currentUrl"
+  [menuSections]="menuSections"
+  [currentUser]="currentUser"
+  [appGrid]="appGrid"
+  [primaryAction]="primaryAction"
+  (nx-navigate)="onNavigate($any($event))"
+  (nx-app-change)="onAppChange($any($event))"
+  (nx-primary-action)="onPrimaryAction($any($event))"
+  (nx-profile-action)="onProfileAction($any($event))">
+  
+  <div class="container-fluid p-4">
+    <!-- BARRA ESTRUCTURAL GLOBAL DE NAVEGACION Y ACCIONES (LAYOUT) -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3 pb-3 border-bottom">
+      <div class="d-flex align-items-center gap-3">
+        <button type="button" class="nx-back-btn" (click)="onBack()" title="Volver atrás" aria-label="Volver atrás">
+          <i class="fa fa-arrow-left"></i>
+        </button>
+        <h1 class="nx-view-title">{{ pageTitle }}</h1>
+      </div>
+      
+      <!-- BOTONES DE ACCION DE LA VISTA (OPCIONALES Y DINÁMICOS) -->
+      <div class="d-flex gap-2 align-items-center" *ngIf="viewActions && viewActions.length > 0">
+        <button 
+          *ngFor="let act of viewActions"
+          type="button" 
+          [ngClass]="act.btnClass || 'btn btn-primary px-3 py-2 fw-semibold'" 
+          (click)="ejecutarAccion(act)">
+          <span *ngIf="act.icon" [class]="act.icon + ' me-1'"></span>
+          {{ act.label }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenido Modular Puro del MFE -->
+    <router-outlet (activate)="onRouteActivate($event)"></router-outlet>
+  </div>
+
+</nx-admin-layout>

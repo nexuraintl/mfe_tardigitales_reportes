@@ -27,6 +27,7 @@ export class App implements OnInit {
   pageTitle = 'Métricas y Dashboard de Tarjetas';
   activeComponent: any = null;
   viewActions: HeaderAction[] = [];
+  sidebarCollapsed = false;
 
   private routeTitles: { [key: string]: string } = {
     '/metricas': 'Métricas y Dashboard de Tarjetas',
@@ -125,6 +126,11 @@ export class App implements OnInit {
       }
     }
     this.pageTitle = 'Reportes y Analítica';
+  }
+
+  onToggleSidebar() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+    this.cdr.detectChanges();
   }
 
   onNavigate(event: CustomEvent) {

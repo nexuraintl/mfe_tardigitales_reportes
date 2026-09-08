@@ -25,7 +25,8 @@
         type="button" 
         class="btn btn-sm btn-link text-muted position-absolute end-0 me-2 p-0 text-decoration-none"
         (click)="searchQuery = ''; onSearchChange()"
-        title="Limpiar búsqueda"
+        data-nx-tooltip="Limpiar búsqueda"
+        aria-label="Limpiar búsqueda"
       >
         <span class="fa fa-times"></span>
       </button>
@@ -130,12 +131,12 @@
 
     <ul class="nx-table-pagination" *ngIf="totalPages > 1">
       <li class="page-item" [class.disabled]="currentPage === 1">
-        <button type="button" class="page-link" (click)="cambiarPagina(1)" [disabled]="currentPage === 1" title="Primera página">
+        <button type="button" class="page-link" (click)="cambiarPagina(1)" [disabled]="currentPage === 1" data-nx-tooltip="Primera página" aria-label="Primera página">
           ««
         </button>
       </li>
       <li class="page-item" [class.disabled]="currentPage === 1">
-        <button type="button" class="page-link" (click)="cambiarPagina(currentPage - 1)" [disabled]="currentPage === 1" title="Página anterior">
+        <button type="button" class="page-link" (click)="cambiarPagina(currentPage - 1)" [disabled]="currentPage === 1" data-nx-tooltip="Página anterior" aria-label="Página anterior">
           «
         </button>
       </li>
@@ -151,12 +152,12 @@
       </li>
 
       <li class="page-item" [class.disabled]="currentPage === totalPages">
-        <button type="button" class="page-link" (click)="cambiarPagina(currentPage + 1)" [disabled]="currentPage === totalPages" title="Página siguiente">
+        <button type="button" class="page-link" (click)="cambiarPagina(currentPage + 1)" [disabled]="currentPage === totalPages" data-nx-tooltip="Página siguiente" aria-label="Página siguiente">
           »
         </button>
       </li>
       <li class="page-item" [class.disabled]="currentPage === totalPages">
-        <button type="button" class="page-link" (click)="cambiarPagina(totalPages)" [disabled]="currentPage === totalPages" title="Última página">
+        <button type="button" class="page-link" (click)="cambiarPagina(totalPages)" [disabled]="currentPage === totalPages" data-nx-tooltip="Última página" aria-label="Última página">
           »»
         </button>
       </li>
